@@ -1,0 +1,38 @@
+h1 {
+  margin-bottom: 2em;
+}
+
+.questions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.button-resize {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 8em;
+  width: 8em;
+}
+
+.button-select {
+  height: 4em;
+  width: 4em;
+  font-size: 1.25em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  width: 5em;
+  font-size: 2em;
+  line-height: 0;
+  filter: drop-shadow(0.5rem 0.5rem 0.5rem rgba(0,0,0,.25));
+}
+
+button:focus {
+  border: white .25em solid;
+  outline: none;
+}
