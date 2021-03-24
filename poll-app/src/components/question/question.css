@@ -1,5 +1,6 @@
 h1 {
   margin-bottom: 2em;
+  text-align: center;
 }
 
 .questions {
@@ -25,14 +26,30 @@ h1 {
   border: none;
 }
 
-button:hover {
+.button-select:hover {
   width: 5em;
   font-size: 2em;
   line-height: 0;
   filter: drop-shadow(0.5rem 0.5rem 0.5rem rgba(0,0,0,.25));
 }
 
-button:focus {
+.button-select:focus {
   border: white .25em solid;
   outline: none;
+}
+
+.button-disabled {
+  height: 4em;
+  width: 4em;
+  font-size: 1.25em;
+  border: none;
+  opacity: 0.5;
+}
+
+.selected {
+  width: 5em;
+  font-size: 2em;
+  line-height: 0;
+  border: white .25em solid;
+  cursor: default;
 }

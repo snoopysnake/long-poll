@@ -13,8 +13,8 @@ app.get('/', (req, res) => {
 app.post('/sendAnswer', (req, res) => {
   const num = req.body.num;
   if (!isNaN(num) && num > 0 && num <= 4)
-    res.send(`Received answer ${req.body.num}!`)
-  else res.send('Not a valid number')
+    res.status(200).send(`Received answer ${req.body.num}!`)
+  else res.status(400).send('Not a valid number')
 })
 
 app.listen(port, () => {
