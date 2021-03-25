@@ -17,7 +17,7 @@ function Guests() {
     <div className="guests">
       Guests:&nbsp;{guests
         .map(g => g === name ? <strong key={g}>{g} (you)</strong> : <span key={g}>{g}</span>)
-        .map((g, i) => i < guests.length - 1 ? <span>{g},&nbsp;</span> : g)
+        .map((g, i) => i < guests.length - 1 ? <span key={i}>{g},&nbsp;</span> : g)
       }
     </div>
   );
