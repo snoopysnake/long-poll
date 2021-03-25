@@ -1,8 +1,25 @@
 .app {
+  background-color: #2B3A67;
+  color: white;
+  min-height: 100vh;
+}
+
+.quiz-setup {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   min-height: 100vh;
-  background-color: #2B3A67;
-  color: white;
+}
+
+.quiz {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
 }

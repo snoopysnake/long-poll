@@ -1,11 +1,15 @@
 import './question.css'
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sendAnswer } from '../../service/quiz-service';
 
 function Question() {
   const [selected, setSelected] = useState(null);
   const [isSubmitted, setSubmitted] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
+
+  useEffect(() => {
+
+  }, []);
 
   const answers = [
     { num: 1, word: 'one', backgroundColor: '#FFFD82', color: 'black' },
@@ -28,14 +32,13 @@ function Question() {
 
   return (
     <form>
+      <h1 style={{marginBottom:'2em'}}>
       {
-        !isSuccess &&
-        <h1>Guess a number from {answers[0].word} to {answers[answers.length-1].word}!</h1>
+        !isSuccess ?
+        `Guess a number from ${answers[0].word} to ${answers[answers.length-1].word}!` :
+        `You guessed number ${selected.word}!`
       }
-      {
-        isSuccess && 
-        <h1>You guessed number {selected.word}!</h1>
-      }
+      </h1>
       <div className="questions">
         {
           answers.map(ans => (
