@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { checkIfJoined, leaveSession } from './service/quiz-service';
+import { checkIfJoined } from './service/quiz-service';
 import Setup from './components/setup/setup';
 import Question from './components/question/question';
 import Guests from './components/guests/guests';
@@ -14,7 +14,7 @@ function App() {
         sessionStorage.getItem('name'),
         sessionStorage.getItem('id')
       );
-      if (res.ok)
+      if (res.status)
         setReady(true);
       else setReady(false);
     })();

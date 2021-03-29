@@ -1,25 +1,33 @@
 import { useEffect, useState } from 'react';
-import { getGuests } from '../../service/quiz-service';
+import { getGuests, updateGuests } from '../../service/quiz-service';
 import './guests.css';
 
 function Guests() {
-  const [guests, setGuests] = useState([]);
-  const name = sessionStorage.getItem('name');
+  const [guests, setGuests] = useState(null);
+  // const name = sessionStorage.getItem('name');
 
   useEffect(() => {
+    const updateGuestList = async () => {
+      try {
+        const { guests } = await updateGuests();
+        setGuests(guests);
+      } finally {
+        await updateGuestList();
+      }
+    }
+
     (async () => {
       const { guests } = await getGuests();
       setGuests(guests);
+      await updateGuestList();
     })();
   }, []);
 
   return (
-    <div className="guests">
-      Guests:&nbsp;{guests
-        .map(g => g === name ? <strong key={g}>{g} (you)</strong> : <span key={g}>{g}</span>)
-        .map((g, i) => i < guests.length - 1 ? <span key={i}>{g},&nbsp;</span> : g)
-      }
-    </div>
+    <p className="guests">
+      Guests:&nbsp;
+      {guests === null ? '' : guests.length > 0 ? guests?.join(', ') : 'None'}
+    </p>
   );
 }
 

@@ -1,5 +1,4 @@
 .guests {
-  display: flex;
-  flex-direction: row;
+  text-align: center;
   margin: .25em;
 }

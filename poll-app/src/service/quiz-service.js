@@ -6,7 +6,7 @@ export async function joinSession(name, id) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({name, id})
+    body: JSON.stringify({ name, id })
   });
 }
 
@@ -16,32 +16,38 @@ export async function leaveSession(name) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({name})
+    body: JSON.stringify({ name })
   });
 }
 
 export async function checkIfJoined(name, id) {
-  return await fetch(`${URL}/joined`, {
+  const res = await fetch(`${URL}/joined`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({name, id})
+    body: JSON.stringify({ name, id })
   });
+  return await res.json();
 }
 
 export async function sendAnswer(num) {
-  const response = await fetch(`${URL}/send`, {
+  const res = await fetch(`${URL}/send`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({num})
+    body: JSON.stringify({ num })
   });
-  return response.ok;
+  return res.ok;
 }
 
 export async function getGuests() {
-  const response = await fetch(`${URL}/guests`);
-  return await response.json();
+  const res = await fetch(`${URL}/guests`);
+  return await res.json();
+}
+
+export async function updateGuests() {
+  const res = await fetch(`${URL}/update-guests`);
+  return await res.json();
 }
