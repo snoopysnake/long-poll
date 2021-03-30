@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { checkIfJoined } from './service/quiz-service';
 import Setup from './components/setup/setup';
 import Timer from './components/timer/timer';
@@ -8,7 +8,7 @@ import './app.css';
 
 function App() {
   const [isReady, setReady] = useState(null);
-  const [disabled, setDisabled] = useState(false);
+  const [ended, setEnd] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -16,9 +16,7 @@ function App() {
         sessionStorage.getItem('name'),
         sessionStorage.getItem('id')
       );
-      if (res.status)
-        setReady(true);
-      else setReady(false);
+      setReady(!!res.status);
     })();
   }, []);
 
@@ -26,9 +24,9 @@ function App() {
     setReady(true);
   }
 
-  const disable = () => {
-    setDisabled(true);
-  }
+  const disable = useCallback((status) => {
+    setEnd(status);
+  }, []);
 
   return (
     <div className="app">
@@ -39,8 +37,8 @@ function App() {
       }
       { isReady === true &&
         <div className="quiz">
-          <Timer disable={disable} />
-          <Question disabled={disabled} />
+          <Timer disable={disable} ended={ended} />
+          <Question ended={ended} />
           <Guests />
         </div>
       }

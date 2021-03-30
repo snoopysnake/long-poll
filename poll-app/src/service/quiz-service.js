@@ -56,3 +56,8 @@ export async function getTimeRemaining() {
   const res = await fetch(`${URL}/time-left`);
   return await res.json();
 }
+
+export async function restart() {
+  const res = await fetch(`${URL}/start`);
+  return await res.ok;
+}

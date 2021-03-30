@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { joinSession } from '../../service/quiz-service';
 import './setup.css';
 
-function Setup(props) {
-  const { ready } = props;
+function Setup({ ready }) {
   const [name, setName] = useState('');
   const [isSubmitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -42,11 +41,11 @@ function Setup(props) {
               className={`name-input ${error ? 'error' : ''}`}
               type="text"
               value={name}
-              onChange={e => {setName(e.target.value); setError('');}}
+              onChange={e => { setName(e.target.value); setError(''); }}
             />
             {
               error &&
-              <div style={{color: '#FF9B71'}}>{error}</div>
+              <div style={{ color: '#FF9B71' }}>{error}</div>
             }
           </div>
           <button

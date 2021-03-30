@@ -6,9 +6,12 @@ const { Client } = require('pg')
 const client = new Client()
 const app = express()
 const port = 8000
+const QUESTION_TIME = 10500
+const SCORE_TIME = 5000
 const responses = {
   users: [],
-  timer: []
+  start: [],
+  end: [],
 }
 
 app.use(cors())
@@ -86,13 +89,18 @@ app.get('/update-guests', async (req, res) => {
   responses.users.push(res)
 })
 
-app.get('/time', async (req, res) => {
-  responses.timer.push(res)
+app.get('/start', async (req, res) => {
+  responses.start.push(res)
+})
+
+app.get('/end', async (req, res) => {
+  responses.end.push(res)
 })
 
 app.get('/time-left', async (req, res) => {
   res.json({
-    time: timeEnd ? timeEnd - new Date() : 0
+    time: timeEnd ? timeEnd - new Date() : 0,
+    started
   })
 })
 
@@ -109,23 +117,26 @@ const updatedGuests = async () => {
 
 const startTimer = () => {
   console.log('Start!')
+  started = true
   timeEnd = new Date(+new Date() + 10000)
   timer = setTimeout(() => {
     console.log('End!')
-    timeEnd = 0
-    responses.timer.forEach(res => {
-      res.json({})
-    })
-    responses.timer = []
+    started = false
+    timeEnd = new Date(+new Date() + 10000)
     console.log('Scoring...')
     setTimeout(() => {
+      responses.start.forEach(res => {
+        res.status(200).end()
+      })
+      responses.start = []
       startTimer()
-    }, 2000)
-  }, 10000)
+    }, SCORE_TIME)
+  }, QUESTION_TIME)
 }
 
 let timer
 let timeEnd
+let started
 
 app.listen(port, async () => {
   console.log(`Long Poll demo listening at http://localhost:${port}`)

@@ -1,4 +1,10 @@
 .guests {
   text-align: center;
   margin: .25em;
+  word-break: break-all;
+  min-height: 1em;
+}
+
+.guests p {
+  margin: 0;
 }

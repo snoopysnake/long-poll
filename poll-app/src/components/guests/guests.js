@@ -24,8 +24,8 @@ function Guests() {
   }, []);
 
   return (
-    <footer>
-      <p className="guests">
+    <footer className="guests">
+      <p>
         Guests:&nbsp;
       {guests === null ? '' : guests.length > 0 ? guests?.join(', ') : 'None'}
       </p>
