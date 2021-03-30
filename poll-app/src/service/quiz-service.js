@@ -51,3 +51,8 @@ export async function updateGuests() {
   const res = await fetch(`${URL}/update-guests`);
   return await res.json();
 }
+
+export async function getTimeRemaining() {
+  const res = await fetch(`${URL}/time-left`);
+  return await res.json();
+}

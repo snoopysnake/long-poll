@@ -7,7 +7,8 @@ const client = new Client()
 const app = express()
 const port = 8000
 const responses = {
-  users: []
+  users: [],
+  timer: []
 }
 
 app.use(cors())
@@ -31,8 +32,8 @@ app.post('/join', async (req, res) => {
         .update(name)
         .digest('hex')
       await client.query(
-        'INSERT INTO users(id, name, winstreak, strikes) VALUES($1, $2, $3, $4) RETURNING *',
-        [id, name, 0, 0]
+        'INSERT INTO users(id, name, winstreak, submitted) VALUES($1, $2, $3, $4) RETURNING *',
+        [id, name, 0, false]
       )
       console.log(`${name} connected!`)
       res.status(200).json({ name, id })
@@ -85,6 +86,16 @@ app.get('/update-guests', async (req, res) => {
   responses.users.push(res)
 })
 
+app.get('/time', async (req, res) => {
+  responses.timer.push(res)
+})
+
+app.get('/time-left', async (req, res) => {
+  res.json({
+    time: timeEnd ? timeEnd - new Date() : 0
+  })
+})
+
 const updatedGuests = async () => {
   try {
     const users = await client.query(
@@ -96,11 +107,32 @@ const updatedGuests = async () => {
   }
 }
 
+const startTimer = () => {
+  console.log('Start!')
+  timeEnd = new Date(+new Date() + 10000)
+  timer = setTimeout(() => {
+    console.log('End!')
+    timeEnd = 0
+    responses.timer.forEach(res => {
+      res.json({})
+    })
+    responses.timer = []
+    console.log('Scoring...')
+    setTimeout(() => {
+      startTimer()
+    }, 2000)
+  }, 10000)
+}
+
+let timer
+let timeEnd
+
 app.listen(port, async () => {
   console.log(`Long Poll demo listening at http://localhost:${port}`)
   try {
     await client.connect()
     await client.query('LISTEN new_user_event')
+    startTimer()
     client.on('notification', async res => {
       if (res.channel === 'new_user_event') {
         const guests = await updatedGuests()

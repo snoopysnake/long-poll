@@ -24,10 +24,12 @@ function Guests() {
   }, []);
 
   return (
-    <p className="guests">
-      Guests:&nbsp;
+    <footer>
+      <p className="guests">
+        Guests:&nbsp;
       {guests === null ? '' : guests.length > 0 ? guests?.join(', ') : 'None'}
-    </p>
+      </p>
+    </footer>
   );
 }
 

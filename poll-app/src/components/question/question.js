@@ -2,7 +2,9 @@ import './question.css'
 import { useEffect, useState } from 'react';
 import { sendAnswer } from '../../service/quiz-service';
 
-function Question() {
+function Question(props) {
+  const { disabled } = props;
+
   const [selected, setSelected] = useState(null);
   const [isSubmitted, setSubmitted] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
@@ -32,12 +34,16 @@ function Question() {
 
   return (
     <form>
-      <h1 style={{marginBottom:'2em'}}>
-      {
-        !isSuccess ?
-        `Guess a number from ${answers[0].word} to ${answers[answers.length-1].word}!` :
-        `You guessed number ${selected.word}!`
-      }
+      <h1 style={{ marginBottom: '2em' }}>
+        {
+          isSuccess && `You guessed number ${selected.word}!`
+        }
+        {
+          (!isSuccess && !disabled) && `Guess a number from ${answers[0].word} to ${answers[answers.length - 1].word}!`
+        }
+        {
+          (!isSuccess && disabled) && 'You ran out of time!'
+        }
       </h1>
       <div className="questions">
         {
@@ -45,8 +51,8 @@ function Question() {
             <div className="button-resize" key={ans.num}>
               <button
                 type="button"
-                className={`${isSubmitted && selected?.num !== ans.num ? 'button-disabled' : 'button-select'} ${selected?.num === ans.num ? 'selected' : ''}`}
-                disabled={isSubmitted}
+                className={`${(isSubmitted && selected?.num !== ans.num) || disabled ? 'button-disabled' : 'button-select'} ${selected?.num === ans.num ? 'selected' : ''}`}
+                disabled={isSubmitted || disabled}
                 value={ans.num}
                 style={{ backgroundColor: ans.backgroundColor, color: ans.color }}
                 onClick={e => answerNum(ans)}

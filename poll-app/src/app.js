@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { checkIfJoined } from './service/quiz-service';
 import Setup from './components/setup/setup';
+import Timer from './components/timer/timer';
 import Question from './components/question/question';
 import Guests from './components/guests/guests';
 import './app.css';
 
 function App() {
   const [isReady, setReady] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -24,6 +26,10 @@ function App() {
     setReady(true);
   }
 
+  const disable = () => {
+    setDisabled(true);
+  }
+
   return (
     <div className="app">
       { isReady === false &&
@@ -33,13 +39,9 @@ function App() {
       }
       { isReady === true &&
         <div className="quiz">
-          <header>
-            Time remaining...
-        </header>
-          <Question />
-          <footer>
-            <Guests />
-          </footer>
+          <Timer disable={disable} />
+          <Question disabled={disabled} />
+          <Guests />
         </div>
       }
     </div>
