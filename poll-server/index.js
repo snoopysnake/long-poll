@@ -6,10 +6,11 @@ const { Client } = require('pg')
 const client = new Client()
 const app = express()
 const port = 8000
-const QUESTION_TIME = 10500
+const QUESTION_TIME = 11500
 const SCORE_TIME = 5000
 const responses = {
   users: [],
+  answers: [],
   start: [],
   end: [],
 }
@@ -68,9 +69,9 @@ app.post('/leave', (req, res) => {
 })
 
 app.post('/send', (req, res) => {
-  const num = req.body.num
+  const num = +req.body.num
   if (!isNaN(num) && num > 0 && num <= 4)
-    res.status(200).send(`Received answer ${req.body.num}!`)
+    responses.answers.push({ num, res })
   else res.status(400).send('Not a valid number')
 })
 
@@ -94,7 +95,7 @@ app.get('/start', async (req, res) => {
 })
 
 app.get('/end', async (req, res) => {
-  responses.end.push(res)
+  responses.end.push(res) // TODO
 })
 
 app.get('/time-left', async (req, res) => {
@@ -116,14 +117,18 @@ const updatedGuests = async () => {
 }
 
 const startTimer = () => {
-  console.log('Start!')
+  number = Math.floor(Math.random() * 3 + 1)
+  console.log('Start!', `CORRECT NUMBER: ${number}`)
   started = true
   timeEnd = new Date(+new Date() + 10000)
-  timer = setTimeout(() => {
-    console.log('End!')
+  setTimeout(() => {
     started = false
     timeEnd = new Date(+new Date() + 10000)
     console.log('Scoring...')
+    responses.answers.forEach(ans => {
+      ans.res.json({ correct: ans.num === number, answer: number })
+    })
+    responses.answers = []
     setTimeout(() => {
       responses.start.forEach(res => {
         res.status(200).end()
@@ -134,9 +139,9 @@ const startTimer = () => {
   }, QUESTION_TIME)
 }
 
-let timer
 let timeEnd
 let started
+let number
 
 app.listen(port, async () => {
   console.log(`Long Poll demo listening at http://localhost:${port}`)
@@ -148,7 +153,6 @@ app.listen(port, async () => {
       if (res.channel === 'new_user_event') {
         const guests = await updatedGuests()
         responses.users.forEach(res => {
-          console.log(guests)
           res.json({ guests })
         })
         responses.users = []

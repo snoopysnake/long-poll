@@ -39,7 +39,7 @@ export async function sendAnswer(num) {
     },
     body: JSON.stringify({ num })
   });
-  return res.ok;
+  return res.json();
 }
 
 export async function getGuests() {

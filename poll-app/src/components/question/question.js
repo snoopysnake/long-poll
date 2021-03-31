@@ -6,10 +6,18 @@ function Question({ ended }) {
   const [selected, setSelected] = useState(null);
   const [isSubmitted, setSubmitted] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
+  const [isCorrect, setCorrect] = useState(null);
+  const [answer, setAnswer] = useState(0);
 
   useEffect(() => {
-
-  }, []);
+    if (!ended) {
+      setSelected(null);
+      setSubmitted(false);
+      setSuccess(false);
+      setCorrect(null);
+      setAnswer(0);
+    }
+  }, [ended]);
 
   const answers = [
     { num: 1, word: 'one', backgroundColor: '#FFFD82', color: 'black' },
@@ -18,30 +26,38 @@ function Question({ ended }) {
     { num: 4, word: 'four', backgroundColor: '#E84855', color: 'white' }
   ];
 
-  const answerNum = async answer => {
+  const answerNum = async ans => {
+    setSelected(ans);
     setSubmitted(true);
-    setSelected(answer);
-    if (await sendAnswer(answer.num)) {
-      setSuccess(true);
-    }
-    else {
-      setSubmitted(false);
-      setSelected(null);
-    }
+    setSuccess(true);
+    const { correct, answer } = await sendAnswer(ans.num);
+    setCorrect(correct);
+    setAnswer(answer);
   }
 
   return (
     <div>
       <form>
-        <h1 style={{ marginBottom: '2em' }}>
+        {
+          isCorrect === null &&
+          <h1>
+            {
+              isSuccess && `You guessed number ${selected.word}!`
+            }
+            {
+              (!isSuccess && !ended) && `Guess a number from one to four!`
+            }
+            {
+              (!isSuccess && ended) && 'You ran out of time!'
+            }
+          </h1>
+        }
+        <h1 style={{ color: `${isCorrect === false ? '#B56B45' : '#FFFD82'}` }}>
           {
-            isSuccess && `You guessed number ${selected.word}!`
+            isCorrect === true && `You guessed correctly!`
           }
           {
-            (!isSuccess && !ended) && `Guess a number from ${answers[0].word} to ${answers[answers.length - 1].word}!`
-          }
-          {
-            (!isSuccess && ended) && 'You ran out of time!'
+            isCorrect === false && `The correct answer is ${answer}!`
           }
         </h1>
         <div className="questions">

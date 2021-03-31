@@ -45,7 +45,7 @@ function Setup({ ready }) {
             />
             {
               error &&
-              <div style={{ color: '#FF9B71' }}>{error}</div>
+              <div style={{ color: '#B56B45' }}>{error}</div>
             }
           </div>
           <button
