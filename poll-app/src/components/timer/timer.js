@@ -1,9 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { getTimeRemaining, restart } from "../../service/quiz-service";
 import './timer.css';
 
 function Timer({ enable, disable, ended }) {
   const [time, setTime] = useState(null);
+
+  const ref = useRef();
+  const prevRef = useRef();
+
+  const countdown = useCallback(elapsed => {
+    if (prevRef.current !== undefined) {
+      const delta = elapsed - prevRef.current;
+      if (time && time - delta <= 0) {
+        disable(true);
+        prevRef.current = undefined;
+        cancelAnimationFrame(ref.current);
+      }
+      setTime(time - delta);
+    }
+    prevRef.current = elapsed;
+    ref.current = requestAnimationFrame(countdown);
+  }, [disable, time]);
+
+  useEffect(() => {
+    ref.current = requestAnimationFrame(countdown);
+    return () => cancelAnimationFrame(ref.current);
+  }, [countdown]);
 
   useEffect(() => {
     const restartTimer = async () => {
@@ -24,15 +46,6 @@ function Timer({ enable, disable, ended }) {
       restartTimer();
     })();
   }, [enable, disable]);
-
-  useEffect(() => {
-    if (time && time - 100 <= 0) {
-      disable(true);
-      return;
-    }
-    const timer = setTimeout(() => setTime(time - 100), 100);
-    return () => clearTimeout(timer);
-  }, [time, disable]);
 
   return (
     <header className="timer">
