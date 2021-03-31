@@ -37,7 +37,7 @@ app.post('/join', async (req, res) => {
         .digest('hex')
       await client.query(
         'INSERT INTO users(id, name, winstreak, submitted) VALUES($1, $2, $3, $4) RETURNING *',
-        [id, name, 0, false]
+        [id, name, 0, 0]
       )
       console.log(`${name} connected!`)
       res.status(200).json({ name, id })
@@ -57,7 +57,7 @@ app.post('/joined', async (req, res) => {
       'SELECT * FROM users WHERE id = $1 AND name = $2',
       [id, name]
     )
-    res.status(200).json({ status: !!users.rows[0] })
+    res.status(200).json({ status: !!users.rows[0], submitted: users.rows[0].submitted })
   } catch (err) {
     res.status(400).json({})
   }
@@ -69,9 +69,15 @@ app.post('/leave', (req, res) => {
 })
 
 app.post('/send', (req, res) => {
+  const id = req.body.id + ''
   const num = +req.body.num
-  if (!isNaN(num) && num > 0 && num <= 4)
+  if (!isNaN(num) && num > 0 && num <= 4) {
+    client.query(
+      'UPDATE users SET submitted = ($1) WHERE id = ($2)',
+      [num, id]
+    )
     responses.answers.push({ num, res })
+  }
   else res.status(400).send('Not a valid number')
 })
 
@@ -134,6 +140,9 @@ const startTimer = () => {
         res.status(200).end()
       })
       responses.start = []
+      client.query(
+        'UPDATE users SET submitted = 0',
+      )  
       startTimer()
     }, SCORE_TIME)
   }, QUESTION_TIME)

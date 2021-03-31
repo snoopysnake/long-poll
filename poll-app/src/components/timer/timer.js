@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getTimeRemaining, restart } from "../../service/quiz-service";
 import './timer.css';
 
-function Timer({ disable, ended }) {
+function Timer({ enable, disable, ended }) {
   const [time, setTime] = useState(null);
 
   useEffect(() => {
@@ -11,6 +11,7 @@ function Timer({ disable, ended }) {
         if (await restart()) {
           disable(false);
           setTime(10500);
+          enable();
         }
       } finally {
         await restartTimer();
@@ -22,7 +23,7 @@ function Timer({ disable, ended }) {
       disable(!res.started);
       restartTimer();
     })();
-  }, [disable]);
+  }, [enable, disable]);
 
   useEffect(() => {
     if (time && time - 100 <= 0) {

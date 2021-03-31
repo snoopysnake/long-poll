@@ -48,7 +48,7 @@ CREATE TABLE public.users (
     id text,
     name text,
     winstreak bigint,
-    submitted boolean
+    submitted bigint
 );
 
 

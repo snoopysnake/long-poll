@@ -31,13 +31,13 @@ export async function checkIfJoined(name, id) {
   return await res.json();
 }
 
-export async function sendAnswer(num) {
+export async function sendAnswer(num, id) {
   const res = await fetch(`${URL}/send`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ num })
+    body: JSON.stringify({ num, id })
   });
   return res.json();
 }

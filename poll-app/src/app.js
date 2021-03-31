@@ -7,6 +7,7 @@ import Guests from './components/guests/guests';
 import './app.css';
 
 function App() {
+  const [submitted, setSubmitted] = useState(0);
   const [isReady, setReady] = useState(null);
   const [ended, setEnd] = useState(null);
 
@@ -17,12 +18,17 @@ function App() {
         sessionStorage.getItem('id')
       );
       setReady(!!res.status);
+      setSubmitted(+res.submitted);
     })();
   }, []);
 
   const ready = () => {
     setReady(true);
   }
+
+  const enable = useCallback((status) => {
+    setSubmitted(0);
+  }, []);
 
   const disable = useCallback((status) => {
     setEnd(status);
@@ -37,8 +43,8 @@ function App() {
       }
       { isReady === true &&
         <div className="quiz">
-          <Timer disable={disable} ended={ended} />
-          <Question ended={ended} />
+          <Timer disable={disable} enable={enable} ended={ended} />
+          <Question submitted={submitted} ended={ended} />
           <Guests />
         </div>
       }
