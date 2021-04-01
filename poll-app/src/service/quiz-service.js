@@ -61,3 +61,14 @@ export async function restart() {
   const res = await fetch(`${URL}/start`);
   return await res.ok;
 }
+
+export async function active(name, id) {
+  const res = await fetch(`${URL}/active`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name, id })
+  });
+  return await res.json();
+}

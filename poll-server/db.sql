@@ -48,7 +48,8 @@ CREATE TABLE public.users (
     id text,
     name text,
     winstreak bigint,
-    submitted bigint
+    submitted bigint,
+    active boolean
 );
 
 
@@ -60,7 +61,7 @@ ALTER TABLE public.users OWNER TO postgres;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, name, winstreak, submitted) FROM stdin;
+COPY public.users (id, name, winstreak, submitted, active) FROM stdin;
 \.
 
 

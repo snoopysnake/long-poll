@@ -28,7 +28,10 @@ function Timer({ enable, disable, ended }) {
   }, [countdown]);
 
   useEffect(() => {
+    let unsubscribe;
     const restartTimer = async () => {
+      if (unsubscribe)
+        return;
       try {
         if (await restart()) {
           disable(false);
@@ -45,6 +48,7 @@ function Timer({ enable, disable, ended }) {
       disable(!res.started);
       restartTimer();
     })();
+    return () => unsubscribe = true;
   }, [enable, disable]);
 
   return (

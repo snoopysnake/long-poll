@@ -7,7 +7,10 @@ function Guests() {
   // const name = sessionStorage.getItem('name');
 
   useEffect(() => {
+    let unsubscribe;
     const updateGuestList = async () => {
+      if (unsubscribe)
+        return;
       try {
         const { guests } = await updateGuests();
         setGuests(guests);
@@ -21,6 +24,7 @@ function Guests() {
       setGuests(guests);
       await updateGuestList();
     })();
+    return () => unsubscribe = true;
   }, []);
 
   return (

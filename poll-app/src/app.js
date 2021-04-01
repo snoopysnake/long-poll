@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { checkIfJoined } from './service/quiz-service';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { active, checkIfJoined } from './service/quiz-service';
 import Setup from './components/setup/setup';
 import Timer from './components/timer/timer';
 import Question from './components/question/question';
@@ -11,6 +11,8 @@ function App() {
   const [isReady, setReady] = useState(null);
   const [ended, setEnd] = useState(null);
 
+  const ref = useRef();
+
   useEffect(() => {
     (async () => {
       const res = await checkIfJoined(
@@ -20,7 +22,27 @@ function App() {
       setReady(!!res.status);
       setSubmitted(+res.submitted);
     })();
+    return () => clearInterval(ref.current);
   }, []);
+
+  useEffect(() => {
+    if (isReady)
+      idle();
+    else clearInterval(ref.current);
+  }, [isReady]);
+
+  const idle = () => {
+    ref.current = setInterval(async () => {
+      const res = await active(
+        sessionStorage.getItem('name'),
+        sessionStorage.getItem('id')
+      );
+      if (!res.active) {
+        clearInterval(ref.current);
+        setReady(false);
+      }
+    }, 10000);
+  }
 
   const ready = () => {
     setReady(true);
