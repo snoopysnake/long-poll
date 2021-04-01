@@ -41,5 +41,4 @@ oc new-app "$GIT_URL" \
 oc patch svc long-poll-backend --type=json --patch="$(cat 'backend-svc-patch.json')"
 oc patch deployment long-poll-backend --type=json --patch="$(cat 'backend-d-patch.json')"
 
-# create backend route if you want to test the backend API out of cluster
-# oc expose svc/long-poll-backend --port='8000'
+oc expose svc/long-poll-backend --port='8000'
