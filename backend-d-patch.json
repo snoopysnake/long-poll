@@ -1,0 +1,28 @@
+[
+  {
+    "path": "/spec/template/spec/containers/0/env/-",
+    "op": "add",
+    "value": {
+      "name": "PGUSER",
+      "valueFrom": {
+        "secretKeyRef": {
+          "name": "long-poll-db",
+          "key": "database-user"
+        }
+      }
+    }
+  },
+  {
+    "path": "/spec/template/spec/containers/0/env/-",
+    "op": "add",
+    "value": {
+      "name": "PGPASSWORD",
+      "valueFrom": {
+        "secretKeyRef": {
+          "name": "long-poll-db",
+          "key": "database-password"
+        }
+      }
+    }
+  }
+]
