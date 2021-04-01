@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 source poll-server/.env
 
+GIT_URL='https://github.com/bavibm/long-poll.git'
+
 echo "Deploying frontend."
-oc new-app https://github.com/snoopysnake/long-poll.git \
+oc new-app "$GIT_URL" \
   --name='long-poll-frontend' \
   --context-dir='poll-app'
 
@@ -19,7 +21,7 @@ oc new-app postgresql-persistent \
 # Wait until long-poll-db pod is running
 echo "Waiting for DB pod to be ready"
 while [[ $(oc get pods -l name=$PGHOST -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
-  echo "." && sleep 2
+  echo "." && sleep 5s
 done
 
 db_pod=$(oc get pods -l name=$PGHOST -o custom-columns=POD:.metadata.name --no-headers)
@@ -28,7 +30,7 @@ oc exec "$db_pod" -- env PGPASSWORD=$PGPASSWORD psql -U $PGUSER -c "CREATE DATAB
 oc exec "$db_pod" -- env PGPASSWORD=$PGPASSWORD psql -d $PGDATABASE -U $PGUSER -f /tmp/poll-server/db.sql
 
 # Setup backend
-oc new-app https://github.com/snoopysnake/long-poll.git \
+oc new-app "$GIT_URL" \
   --name='long-poll-backend' \
   --context-'dir=poll-server' \
   -e PGHOST="$PGHOST" \
